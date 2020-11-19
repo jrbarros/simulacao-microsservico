@@ -11,12 +11,13 @@ use Doctrine\Persistence\ObjectManager;
 
 class SensitiveInformationFixtures extends Fixture
 {
+    public const CPF = '14427832067';
 
     public function load(ObjectManager $manager)
     {
         $sensitiveInformation = new SensitiveInformation();
 
-        $sensitiveInformation->setCpf(Generator::cpf());
+        $sensitiveInformation->setCpf(self::CPF);
         $sensitiveInformation->setName('Nome de teste');
         $sensitiveInformation->setAddress('Endereço de teste');
 
