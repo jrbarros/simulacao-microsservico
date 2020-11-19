@@ -20,21 +20,18 @@ class SensitiveInformation
 
     /**
      * @ORM\Column(name="cpf", type="string")
-     * @Assert\NotBlank()
      * @var string
      */
     private string $cpf;
 
     /**
      * @ORM\Column(name="name", type="encrypted")
-     * @Assert\NotBlank()
      * @var string
      */
     private string $name;
 
     /**
      * @ORM\Column(name="endereco", type="encrypted")
-     * @Assert\NotBlank()
      * @var string
      */
     private string $address;

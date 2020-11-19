@@ -48,4 +48,4 @@ de uso uma aplicação de [Machine Learn](https://pt.wikipedia.org/wiki/Aprendiz
 
 O [**Service Three**](service_three/README.md) usará o [Elastic Search](https://www.elastic.co/pt/), é a melhor opção para busca e armazenamento de documentos de eventos.
 
-Obs: ***Por questões de expor com mais facilidade, essa projeto contém dos os serviços citados. Em um caso real, cada um dos microsserviços  teria seu próprio controle de versão.***
+Obs: ***Por questões de expor com mais facilidade, essa projeto contém os serviços citados. Em um caso real, cada um dos microsserviços  teria seu próprio controle de versão.***
