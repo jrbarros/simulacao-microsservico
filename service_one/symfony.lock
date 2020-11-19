@@ -225,6 +225,9 @@
     "sebastian/diff": {
         "version": "4.0.4"
     },
+    "symfony/browser-kit": {
+        "version": "v5.1.8"
+    },
     "symfony/cache": {
         "version": "v5.1.8"
     },
@@ -253,6 +256,9 @@
         "version": "v2.2.0"
     },
     "symfony/doctrine-bridge": {
+        "version": "v5.1.8"
+    },
+    "symfony/dom-crawler": {
         "version": "v5.1.8"
     },
     "symfony/dotenv": {

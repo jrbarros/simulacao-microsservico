@@ -60,7 +60,7 @@ class SensitiveInformation
      */
     public function setCpf(string $cpf): void
     {
-        $this->cpf = $cpf;
+        $this->cpf = (string) preg_replace('/\D/', '', $cpf);
     }
 
     /**

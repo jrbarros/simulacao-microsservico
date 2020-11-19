@@ -5,7 +5,10 @@ namespace App\Controller;
 
 
 use App\Entity\SensitiveInformation;
+use App\Service\SensitiveInformationService;
 use App\Validator\CpfValidator;
+use App\Validator\SensitiveInformationExceptionMessage;
+use App\Validator\SensitiveInformationMessage;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,12 +31,21 @@ class SensitiveController extends AbstractController
     private ManagerRegistry $managerRegistry;
 
     /**
+     * @var SensitiveInformationService
+     */
+    private SensitiveInformationService $sensitiveInformationService;
+
+    /**
      * SensitiveController constructor.
      * @param ManagerRegistry $managerRegistry
+     * @param SensitiveInformationService $sensitiveInformationService
      */
-    public function __construct(ManagerRegistry $managerRegistry)
-    {
+    public function __construct(
+        ManagerRegistry $managerRegistry,
+        SensitiveInformationService $sensitiveInformationService
+    ) {
         $this->managerRegistry = $managerRegistry;
+        $this->sensitiveInformationService = $sensitiveInformationService;
     }
 
     /**
@@ -45,43 +57,25 @@ class SensitiveController extends AbstractController
     {
         try {
 
-            $sensitiveInformation = new SensitiveInformation();
+            $content = $request->getContent();
 
-            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-
-            if(! array_key_exists('cpf', $data) || empty($data['cpf'])) {
-               throw new \RuntimeException("Campo 'cpf' não enviado ou estar em branco");
+            if(empty($content)) {
+                throw new \RuntimeException(SensitiveInformationExceptionMessage::EMPTY_BODY);
             }
 
-            if(! array_key_exists('name', $data) || empty($data['name'])) {
-                throw new \RuntimeException("Campo 'name' não enviado ou estar em branco");
-            }
+            $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
-            if(! array_key_exists('address', $data) || empty($data['address'])) {
-                throw new \RuntimeException("Campo 'address' não enviado ou estar em branco");
-            }
-
-            $cpf = preg_replace('/\D/', '', $data['cpf']);
-
-            if (CpfValidator::validateCpf($cpf) ===  false) {
-                throw new \RuntimeException("Campo 'cpf' não é valido");
-            }
-
-            $sensitiveInformation->setCpf($cpf);
-            $sensitiveInformation->setName($data['name']);
-            $sensitiveInformation->setAddress($data['address']);
-
-            $this->managerRegistry->getManager()->persist($sensitiveInformation);
-            $this->managerRegistry->getManager()->flush();
+            $this->sensitiveInformationService->processSave($data);
         } catch (\Exception $exception) {
             return $this->json(
-                [   'message' => '',
+                [
+                    'message' => SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE,
                     'error' => $exception->getMessage()
                 ],
                 Response::HTTP_BAD_REQUEST
             );
         }
 
-        return $this->json(['message' => 'Informação gravada com sucesso!']);
+        return $this->json(['message' => SensitiveInformationMessage::CREATE_RESPONSE]);
     }
 }
