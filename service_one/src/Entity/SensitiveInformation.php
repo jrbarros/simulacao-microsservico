@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\SensitiveInformationRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass=SensitiveInformationRepository::class)
+ */
+class SensitiveInformation
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="guid")
+     */
+    private string $id;
+
+    /**
+     * @ORM\Column(name="cpf", type="string")
+     * @Assert\NotBlank()
+     * @var string
+     */
+    private string $cpf;
+
+    /**
+     * @ORM\Column(name="name", type="encrypted")
+     * @Assert\NotBlank()
+     * @var string
+     */
+    private string $name;
+
+    /**
+     * @ORM\Column(name="endereco", type="encrypted")
+     * @Assert\NotBlank()
+     * @var string
+     */
+    private string $address;
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCpf(): string
+    {
+        return $this->cpf;
+    }
+
+    /**
+     * @param string $cpf
+     */
+    public function setCpf(string $cpf): void
+    {
+        $this->cpf = $cpf;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress(string $address): void
+    {
+        $this->address = $address;
+    }
+}
