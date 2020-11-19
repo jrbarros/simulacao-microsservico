@@ -4,6 +4,7 @@
 namespace App\Tests\Controller;
 
 
+use App\DataFixtures\SensitiveInformationFixtures;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -21,6 +22,6 @@ class SensitiveControllerTest extends WebTestCase
     public function setUp(): void
     {
         $this->client = static::createClient();
-        $this->loadFixtures([ClientFixtures::class]);
+        $this->loadFixtures([SensitiveInformationFixtures::class]);
     }
 }
