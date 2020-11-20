@@ -32,3 +32,10 @@ services:
 
     App\DataFixtures\:
         resource: '../src/DataFixtures/*'
+
+    App\Encrypt\Encrypt:
+        public: true
+        arguments:
+            $secretKey: '%env(ENCRYPTION_CUSTOM_KEY)%'
+            $secretIv: '%env(ENCRYPTION_CUSTOM_IV_KEY)%'
+            $encryptMethod: '%env(ENCRYPTION_METHOD)%'

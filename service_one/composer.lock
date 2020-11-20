@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7c1921e28a94919ee97bdbf737fa9353",
+    "content-hash": "e46b358b00f2e659998a60fd68545411",
     "packages": [
         {
             "name": "async-aws/cloud-formation",

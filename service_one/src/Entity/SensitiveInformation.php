@@ -18,7 +18,7 @@ class SensitiveInformation
     private string $id;
 
     /**
-     * @ORM\Column(name="cpf", type="string")
+     * @ORM\Column(name="cpf", type="cpfEncrypted")
      *
      * @var string
      */

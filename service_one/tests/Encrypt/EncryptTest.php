@@ -5,6 +5,7 @@ namespace App\Tests\Encrypt;
 
 
 use App\DataFixtures\SensitiveInformationFixtures;
+use App\Encrypt\Encrypt;
 use App\Entity\SensitiveInformation;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
@@ -19,6 +20,7 @@ class EncryptTest extends WebTestCase
 
     protected KernelBrowser $client;
     private ? Registry $doctrine;
+    private ?Encrypt $encrypt;
 
     public function setUp(): void
     {
@@ -26,6 +28,7 @@ class EncryptTest extends WebTestCase
         $container =  self::$container;
 
         $this->doctrine = $container->get('doctrine');
+        $this->encrypt = $container->get(Encrypt::class);
 
     }
 
@@ -38,14 +41,14 @@ class EncryptTest extends WebTestCase
             ->getRepository(SensitiveInformation::class)
             ->findOneBy(['cpf' => SensitiveInformationFixtures::CPF]);
 
-        $cpf = "'". SensitiveInformationFixtures::CPF . "'";
+        $cpf = "'". $this->encrypt->encryptCpf(SensitiveInformationFixtures::CPF) . "'";
         $array = $this->doctrine
             ->getConnection()
             ->query("select * from sensitive_information where cpf = {$cpf} limit 1")
             ->fetchAssociative();
 
         self::assertNotEmpty($array);
-        self::assertEquals($array['cpf'], $sensitive->getCpf());
+        self::assertNotEquals($array['cpf'], $sensitive->getCpf());
         self::assertNotEquals($array['name'], $sensitive->getName());
         self::assertNotEquals($array['address'], $sensitive->getAddress());
     }
