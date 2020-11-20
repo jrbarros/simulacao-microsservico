@@ -9,7 +9,9 @@ use App\Repository\SensitiveInformationRepository;
 use App\Validator\CpfValidator;
 use App\Validator\SensitiveInformationExceptionMessage;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Cache\InvalidArgumentException;
 use RuntimeException;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 /**
  * Class SensitiveInformationService.
@@ -25,19 +27,26 @@ class SensitiveInformationService
      * @var SensitiveInformationRepository
      */
     private SensitiveInformationRepository $sensitiveInformationRepository;
+    /**
+     * @var AdapterInterface
+     */
+    private AdapterInterface $adapter;
 
     /**
      * SensitiveInformationService constructor.
      *
      * @param ManagerRegistry                $managerRegistry
      * @param SensitiveInformationRepository $sensitiveInformationRepository
+     * @param AdapterInterface               $adapter
      */
     public function __construct(
         ManagerRegistry $managerRegistry,
-        SensitiveInformationRepository $sensitiveInformationRepository
+        SensitiveInformationRepository $sensitiveInformationRepository,
+        AdapterInterface $adapter
     ) {
         $this->managerRegistry = $managerRegistry;
         $this->sensitiveInformationRepository = $sensitiveInformationRepository;
+        $this->adapter = $adapter;
     }
 
     /**
@@ -82,11 +91,15 @@ class SensitiveInformationService
 
     /**
      * @param SensitiveInformation $sensitiveInformation
+     *
+     * @throws InvalidArgumentException
      */
     public function save(SensitiveInformation $sensitiveInformation): void
     {
         $this->managerRegistry->getManager()->persist($sensitiveInformation);
         $this->managerRegistry->getManager()->flush();
+
+        $this->processCache($sensitiveInformation);
     }
 
     /**
@@ -140,9 +153,30 @@ class SensitiveInformationService
      * @param string $id
      *
      * @return SensitiveInformation|null
+     *
+     * @throws InvalidArgumentException
      */
     public function findSensitiveInformationById(string $id): ?SensitiveInformation
     {
+        if ($this->adapter->hasItem($id)) {
+            return $this->adapter->getItem($id)->get();
+        }
+
         return $this->sensitiveInformationRepository->find($id);
+    }
+
+    /**
+     * @param SensitiveInformation $sensitiveInformation
+     *
+     * @throws InvalidArgumentException
+     */
+    private function processCache(SensitiveInformation $sensitiveInformation): void
+    {
+        $item = $this->adapter->getItem($sensitiveInformation->getId());
+        $item
+            ->set($sensitiveInformation)
+            ->expiresAfter(new \DateInterval('P30D'));
+
+        $this->adapter->save($item);
     }
 }
