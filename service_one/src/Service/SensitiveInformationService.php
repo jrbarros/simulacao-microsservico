@@ -1,8 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
 namespace App\Service;
-
 
 use App\Entity\SensitiveInformation;
 use App\Repository\SensitiveInformationRepository;
@@ -12,12 +12,10 @@ use Doctrine\Persistence\ManagerRegistry;
 use RuntimeException;
 
 /**
- * Class SensitiveInformationService
- * @package App\Service
+ * Class SensitiveInformationService.
  */
 class SensitiveInformationService
 {
-
     /**
      * @var ManagerRegistry
      */
@@ -30,7 +28,8 @@ class SensitiveInformationService
 
     /**
      * SensitiveInformationService constructor.
-     * @param ManagerRegistry $managerRegistry
+     *
+     * @param ManagerRegistry                $managerRegistry
      * @param SensitiveInformationRepository $sensitiveInformationRepository
      */
     public function __construct(
@@ -56,25 +55,27 @@ class SensitiveInformationService
 
         $this->save($sensitiveInformation);
     }
+
     /**
      * @param $data
+     *
      * @return void|RuntimeException
      */
     public function validateRequestInformation($data): void
     {
-        if(! array_key_exists('cpf', $data) || empty($data['cpf'])) {
+        if (!array_key_exists('cpf', $data) || empty($data['cpf'])) {
             throw new RuntimeException(SensitiveInformationExceptionMessage::CPF_NOT_FOUND_OR_BLANK);
         }
 
-        if(! array_key_exists('name', $data) || empty($data['name'])) {
+        if (!array_key_exists('name', $data) || empty($data['name'])) {
             throw new RuntimeException(SensitiveInformationExceptionMessage::NAME_NOT_FOUND_OR_BLANK);
         }
 
-        if(! array_key_exists('address', $data) || empty($data['address'])) {
+        if (!array_key_exists('address', $data) || empty($data['address'])) {
             throw new RuntimeException(SensitiveInformationExceptionMessage::ADDRESS_NOT_FOUND_OR_BLANK);
         }
 
-        if (CpfValidator::validateCpf($data['cpf']) ===  false) {
+        if (false === CpfValidator::validateCpf($data['cpf'])) {
             throw new \RuntimeException(SensitiveInformationExceptionMessage::CPF_NOT_VALID);
         }
     }
@@ -90,9 +91,10 @@ class SensitiveInformationService
 
     /**
      * @param array $data
+     *
      * @return SensitiveInformation
      */
-    private function buildSensitiveInformation(array $data) : SensitiveInformation
+    private function buildSensitiveInformation(array $data): SensitiveInformation
     {
         $sensitiveInformation = new SensitiveInformation();
 

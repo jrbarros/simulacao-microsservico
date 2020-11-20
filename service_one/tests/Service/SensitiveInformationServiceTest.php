@@ -4,22 +4,15 @@
 namespace App\Tests\Service;
 
 
-
 use App\DataFixtures\SensitiveInformationFixtures;
 use App\Entity\SensitiveInformation;
 use App\Helpers\Generator;
 use App\Service\SensitiveInformationService;
-use App\Tests\DataBaseManagerTest;
 use App\Validator\SensitiveInformationExceptionMessage;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\SchemaTool;
-use hollodotme\FastCGI\Encoders\NameValuePairEncoder;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use ReflectionClass;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class SensitiveInformationServiceTest

@@ -1,18 +1,19 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
 namespace App\Helpers;
 
 /**
- * Class Gerenator
- * @package App\Helpers
+ * Class Gerenator.
  */
 class Generator
 {
-
     /**
      * @param $withMask
+     *
      * @return string
+     *
      * @throws \Exception
      */
     public static function cpf(bool $withMask = false)
@@ -27,7 +28,7 @@ class Generator
         $n8 = random_int(0, 9);
         $n9 = random_int(0, 9);
         $d1 = $n9 * 2 + $n8 * 3 + $n7 * 4 + $n6 * 5 + $n5 * 6 + $n4 * 7 + $n3 * 8 + $n2 * 9 + $n1 * 10;
-        $d1 = 11 - ( self::mod($d1, 11) );
+        $d1 = 11 - (self::mod($d1, 11));
         if ($d1 >= 10) {
             $d1 = 0;
         }
@@ -37,47 +38,50 @@ class Generator
             $d2 = 0;
         }
 
-        if ($withMask === true) {
-            return $n1 . $n2 . $n3 . '.' . $n4 . $n5 . $n6 . '.' . $n7 . $n8 . $n9 . '-' . $d1 . $d2;
+        if (true === $withMask) {
+            return $n1.$n2.$n3.'.'.$n4.$n5.$n6.'.'.$n7.$n8.$n9.'-'.$d1.$d2;
         }
 
-        return $n1 . $n2 . $n3 . $n4 . $n5 . $n6 . $n7 . $n8 . $n9 . $d1 . $d2;
+        return $n1.$n2.$n3.$n4.$n5.$n6.$n7.$n8.$n9.$d1.$d2;
     }
 
     /**
      * @param $dividendo
      * @param $divisor
+     *
      * @return false|float
      */
     public static function mod($dividendo, $divisor)
     {
-        return round($dividendo - ( floor($dividendo / $divisor) * $divisor ));
+        return round($dividendo - (floor($dividendo / $divisor) * $divisor));
     }
 
     /**
      * @param $compontos
+     *
      * @return string
+     *
      * @throws \Exception
      */
     public static function cnpj(bool $compontos = false)
     {
-        $n1  = random_int(0, 9);
-        $n2  = random_int(0, 9);
-        $n3  = random_int(0, 9);
-        $n4  = random_int(0, 9);
-        $n5  = random_int(0, 9);
-        $n6  = random_int(0, 9);
-        $n7  = random_int(0, 9);
-        $n8  = random_int(0, 9);
-        $n9  = 0;
+        $n1 = random_int(0, 9);
+        $n2 = random_int(0, 9);
+        $n3 = random_int(0, 9);
+        $n4 = random_int(0, 9);
+        $n5 = random_int(0, 9);
+        $n6 = random_int(0, 9);
+        $n7 = random_int(0, 9);
+        $n8 = random_int(0, 9);
+        $n9 = 0;
         $n10 = 0;
         $n11 = 0;
         $n12 = 1;
-        $d1  =
+        $d1 =
             $n12 * 2 + $n11 * 3 + $n10 * 4 + $n9 * 5 +
             $n8 * 6 + $n7 * 7 + $n6 * 8 + $n5 * 9 +
             $n4 * 2 + $n3 * 3 + $n2 * 4 + $n1 * 5;
-        $d1  = 11 - (self::mod($d1, 11));
+        $d1 = 11 - (self::mod($d1, 11));
         if ($d1 >= 10) {
             $d1 = 0;
         }
@@ -90,12 +94,12 @@ class Generator
             $d2 = 0;
         }
 
-        if ($compontos === true) {
+        if (true === $compontos) {
             return
-                $n1 . $n2 . '.' . $n3 . $n4 . $n5 . '.' .
-                $n6 . $n7 . $n8 . '/' . $n9 . $n10 . $n11 . $n12 . '-' . $d1 . $d2;
+                $n1.$n2.'.'.$n3.$n4.$n5.'.'.
+                $n6.$n7.$n8.'/'.$n9.$n10.$n11.$n12.'-'.$d1.$d2;
         }
 
-        return $n1 . $n2 . $n3 . $n4 . $n5 . $n6 . $n7 . $n8 . $n9 . $n10 . $n11 . $n12 . $d1 . $d2;
+        return $n1.$n2.$n3.$n4.$n5.$n6.$n7.$n8.$n9.$n10.$n11.$n12.$d1.$d2;
     }
 }
