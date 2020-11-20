@@ -47,7 +47,7 @@ class SensitiveInformationService
     {
         $this->validateRequestInformation($data);
 
-        if ($this->findSensitiveInformation($data['cpf']) instanceof SensitiveInformation) {
+        if ($this->findSensitiveInformationByCpf($data['cpf']) instanceof SensitiveInformation) {
             throw new RuntimeException(SensitiveInformationExceptionMessage::SENSITIVE_INFORMATION_EXIST);
         }
 
@@ -90,13 +90,16 @@ class SensitiveInformationService
     }
 
     /**
-     * @param array $data
+     * @param array                     $data
+     * @param SensitiveInformation|null $sensitiveInformation
      *
      * @return SensitiveInformation
      */
-    private function buildSensitiveInformation(array $data): SensitiveInformation
+    public function buildSensitiveInformation(array $data, ?SensitiveInformation $sensitiveInformation = null): SensitiveInformation
     {
-        $sensitiveInformation = new SensitiveInformation();
+        if (null === $sensitiveInformation) {
+            $sensitiveInformation = new SensitiveInformation();
+        }
 
         $sensitiveInformation->setCpf($data['cpf']);
         $sensitiveInformation->setName($data['name']);
@@ -105,8 +108,41 @@ class SensitiveInformationService
         return $sensitiveInformation;
     }
 
-    private function findSensitiveInformation(string $cpf): ?SensitiveInformation
+    /**
+     * @param array                $data
+     * @param SensitiveInformation $sensitiveInformation
+     */
+    public function processUpdate(array $data, SensitiveInformation $sensitiveInformation): void
+    {
+        /*
+         * necessário para poder usar as funções de validação sem ter que fragmentar ainda mais.
+         */
+        $data['cpf'] = $sensitiveInformation->getCpf();
+
+        $this->validateRequestInformation($data);
+
+        $sensitiveInformation = $this->buildSensitiveInformation($data, $sensitiveInformation);
+
+        $this->save($sensitiveInformation);
+    }
+
+    /**
+     * @param string $cpf
+     *
+     * @return SensitiveInformation|null
+     */
+    public function findSensitiveInformationByCpf(string $cpf): ?SensitiveInformation
     {
         return $this->sensitiveInformationRepository->findOneBy(['cpf' => $cpf]);
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return SensitiveInformation|null
+     */
+    public function findSensitiveInformationById(string $id): ?SensitiveInformation
+    {
+        return $this->sensitiveInformationRepository->find($id);
     }
 }

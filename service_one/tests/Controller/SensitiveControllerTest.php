@@ -5,8 +5,10 @@ namespace App\Tests\Controller;
 
 
 use App\DataFixtures\SensitiveInformationFixtures;
+use App\Entity\SensitiveInformation;
 use App\Helpers\Generator;
 use App\Validator\SensitiveInformationExceptionMessage;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -21,10 +23,13 @@ class SensitiveControllerTest extends WebTestCase
     use FixturesTrait;
 
     protected KernelBrowser $client;
+    private ?Registry $doctrine;
 
     public function setUp(): void
     {
         $this->client = static::createClient();
+        $container =  self::$container;
+        $this->doctrine = $container->get('doctrine');
         $this->loadFixtures([SensitiveInformationFixtures::class]);
     }
 
@@ -66,12 +71,9 @@ class SensitiveControllerTest extends WebTestCase
 
         $responseBody = json_decode($this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-        $erroMessage = "Campo 'address' não enviado ou estar em branco";
-        $messageResponse = 'Erro no processamento de informações do cliente';
-
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
-        self::assertEquals($erroMessage, $responseBody['error']);
-        self::assertEquals($messageResponse, $responseBody['message']);
+        self::assertEquals(SensitiveInformationExceptionMessage::ADDRESS_NOT_FOUND_OR_BLANK, $responseBody['error']);
+        self::assertEquals(SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE, $responseBody['message']);
     }
 
 
@@ -163,6 +165,129 @@ class SensitiveControllerTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         self::assertEquals(SensitiveInformationExceptionMessage::CPF_NOT_VALID, $responseBody['error']);
+        self::assertEquals(SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE, $responseBody['message']);
+    }
+
+    public function test_update_success_sensitive_information(): void
+    {
+        $sensitive = $this
+            ->doctrine
+            ->getManager()
+            ->getRepository(SensitiveInformation::class)
+            ->findOneBy(['cpf'=> SensitiveInformationFixtures::CPF]);
+
+        $dataToCheck = [
+            'name' => $sensitive->getName(),
+            'address' => $sensitive->getAddress(),
+            'cpf' => $sensitive->getCpf()
+        ];
+
+        $this->client->request(
+            'PUT',
+            '/v1/sensitive-information/'. $sensitive->getId(),
+            [],
+            [],
+            [   'HTTP_Content-Type' => 'application/json',
+                'HTTP_Authorization' => 'Bearer ' . ''
+            ],
+            '{
+                      "name": "Name update",
+                      "address": "Address update" 
+                    }'
+        );
+
+        $sensitiveUpdated = $this
+            ->doctrine
+            ->getManager()
+            ->getRepository(SensitiveInformation::class)
+            ->findOneBy(['cpf'=> SensitiveInformationFixtures::CPF]);
+
+        self::assertNotEquals($sensitiveUpdated->getName(), $dataToCheck['name']);
+        self::assertNotEquals($sensitiveUpdated->getAddress(), $dataToCheck['address']);
+        self::assertEquals($sensitiveUpdated->getCpf(), $dataToCheck['cpf']);
+        self::assertResponseIsSuccessful();
+    }
+
+    public function test_update_error_400_not_found_address_sensitive_information(): void
+    {
+        $sensitive = $this
+            ->doctrine
+            ->getManager()
+            ->getRepository(SensitiveInformation::class)
+            ->findOneBy(['cpf'=> SensitiveInformationFixtures::CPF]);
+
+        $this->client->request(
+            'PUT',
+            '/v1/sensitive-information/'. $sensitive->getId(),
+            [],
+            [],
+            [   'HTTP_Content-Type' => 'application/json',
+                'HTTP_Authorization' => 'Bearer ' . ''
+            ],
+            '{
+                      "name": "Name update"
+                    }'
+        );
+
+        $responseBody = json_decode($this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        self::assertEquals(SensitiveInformationExceptionMessage::ADDRESS_NOT_FOUND_OR_BLANK, $responseBody['error']);
+        self::assertEquals(SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE, $responseBody['message']);
+    }
+
+
+    public function test_update_error_400_not_found_name_sensitive_information(): void
+    {
+        $sensitive = $this
+            ->doctrine
+            ->getManager()
+            ->getRepository(SensitiveInformation::class)
+            ->findOneBy(['cpf'=> SensitiveInformationFixtures::CPF]);
+
+        $this->client->request(
+            'PUT',
+            '/v1/sensitive-information/'. $sensitive->getId(),
+            [],
+            [],
+            [   'HTTP_Content-Type' => 'application/json',
+                'HTTP_Authorization' => 'Bearer ' . ''
+            ],
+            '{
+                        "address": "Address update" 
+                    }'
+        );
+
+        $responseBody = json_decode($this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        self::assertEquals(SensitiveInformationExceptionMessage::NAME_NOT_FOUND_OR_BLANK, $responseBody['error']);
+        self::assertEquals(SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE, $responseBody['message']);
+    }
+
+    public function test_update_error_400_not_empty_body_sensitive_information(): void
+    {
+        $sensitive = $this
+            ->doctrine
+            ->getManager()
+            ->getRepository(SensitiveInformation::class)
+            ->findOneBy(['cpf'=> SensitiveInformationFixtures::CPF]);
+
+        $this->client->request(
+            'PUT',
+            '/v1/sensitive-information/'. $sensitive->getId(),
+            [],
+            [],
+            [   'HTTP_Content-Type' => 'application/json',
+                'HTTP_Authorization' => 'Bearer ' . ''
+            ],
+            ''
+        );
+
+        $responseBody = json_decode($this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        self::assertEquals(SensitiveInformationExceptionMessage::EMPTY_BODY, $responseBody['error']);
         self::assertEquals(SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE, $responseBody['message']);
     }
 }

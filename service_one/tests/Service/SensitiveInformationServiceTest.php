@@ -140,7 +140,7 @@ class SensitiveInformationServiceTest extends WebTestCase
     {
         $this->loadFixtures([SensitiveInformationFixtures::class]);
 
-        $sensitiveDB = $this->invokeMethod($this->service, 'findSensitiveInformation', [SensitiveInformationFixtures::CPF]);
+        $sensitiveDB = $this->service->findSensitiveInformationByCpf(SensitiveInformationFixtures::CPF);
         self::assertInstanceOf(SensitiveInformation::class, $sensitiveDB);
     }
 
@@ -148,7 +148,7 @@ class SensitiveInformationServiceTest extends WebTestCase
     {
         $this->loadFixtures([SensitiveInformationFixtures::class]);
 
-        $sensitiveDB = $this->invokeMethod($this->service, 'findSensitiveInformation', ['00000000000']);
+        $sensitiveDB = $this->service->findSensitiveInformationByCpf('00000000000');
         self::assertNull($sensitiveDB);
     }
 
