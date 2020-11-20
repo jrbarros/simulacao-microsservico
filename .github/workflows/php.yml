@@ -1,0 +1,41 @@
+name: PHP Composer
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Service One -> Validate composer.json and composer.lock
+      working-directory: ./service_one
+      run: composer validate
+
+    - name: Service One -> Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        working-directory: ./service_one
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Service One -> Install dependencies
+      working-directory: ./service_one
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+    - name: Service One -> Run test suite
+      working-directory: ./service_one
+      run: composer run-script test
