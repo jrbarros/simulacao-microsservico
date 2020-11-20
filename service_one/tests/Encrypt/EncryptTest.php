@@ -47,6 +47,6 @@ class EncryptTest extends WebTestCase
         self::assertNotEmpty($array);
         self::assertEquals($array['cpf'], $sensitive->getCpf());
         self::assertNotEquals($array['name'], $sensitive->getName());
-        self::assertNotEquals($array['endereco'], $sensitive->getAddress());
+        self::assertNotEquals($array['address'], $sensitive->getAddress());
     }
 }

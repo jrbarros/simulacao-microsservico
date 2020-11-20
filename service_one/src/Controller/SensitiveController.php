@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\SensitiveInformation;
 use App\Service\SensitiveInformationService;
 use App\Validator\SensitiveInformationExceptionMessage;
 use App\Validator\SensitiveInformationMessage;
@@ -21,6 +22,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SensitiveController extends AbstractController
 {
+    use ValidateEmptyContentTrait;
+    use RequestTrait;
+
     /**
      * @var ManagerRegistry
      */
@@ -57,13 +61,13 @@ class SensitiveController extends AbstractController
         try {
             $content = $request->getContent();
 
-            if (empty($content)) {
-                throw new \RuntimeException(SensitiveInformationExceptionMessage::EMPTY_BODY);
-            }
+            $this->isEmpty($content);
 
-            $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+            $data = $this->contentToArray($content);
 
             $this->sensitiveInformationService->processSave($data);
+
+            return $this->json(['message' => SensitiveInformationMessage::CREATE_RESPONSE]);
         } catch (\Exception $exception) {
             return $this->json(
                 [
@@ -73,7 +77,42 @@ class SensitiveController extends AbstractController
                 Response::HTTP_BAD_REQUEST
             );
         }
+    }
 
-        return $this->json(['message' => SensitiveInformationMessage::CREATE_RESPONSE]);
+    /**
+     * @Route("/{id}", name="update", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param $id
+     *
+     * @return JsonResponse
+     */
+    public function update(Request $request, $id): JsonResponse
+    {
+        try {
+            $sensitiveInformation = $this->sensitiveInformationService->findSensitiveInformationById($id);
+
+            if (!$sensitiveInformation instanceof SensitiveInformation) {
+                throw new \RuntimeException();
+            }
+
+            $content = $request->getContent();
+
+            $this->isEmpty($content);
+
+            $data = $this->contentToArray($content);
+
+            $this->sensitiveInformationService->processUpdate($data, $sensitiveInformation);
+
+            return $this->json(['message' => SensitiveInformationMessage::UPDATE_RESPONSE]);
+        } catch (\Exception $exception) {
+            return $this->json(
+                [
+                    'message' => SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE,
+                    'error' => $exception->getMessage(),
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
 }

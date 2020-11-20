@@ -71,7 +71,8 @@
         ],
         "test": [
             "bin/phpunit --testdox"
-        ]
+        ],
+        "phpcs": "vendor/bin/php-cs-fixer fix src"
     },
     "conflict": {
         "symfony/symfony": "*"
