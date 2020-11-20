@@ -31,7 +31,7 @@ class SensitiveInformation
     private string $name;
 
     /**
-     * @ORM\Column(name="endereco", type="encrypted")
+     * @ORM\Column(name="address", type="encrypted")
      * @var string
      */
     private string $address;
