@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\SensitiveInformation;
+
 trait RequestTrait
 {
     /**
@@ -18,5 +20,19 @@ trait RequestTrait
         } catch (\JsonException $e) {
             throw new \RuntimeException('Erro ao processar o conteúdo do request para array');
         }
+    }
+
+    /**
+     * @param SensitiveInformation $sensitiveInformation
+     *
+     * @return array
+     */
+    public function buildSensitiveInformationDataReturn(SensitiveInformation $sensitiveInformation): array
+    {
+        return [
+            'cpf' => $sensitiveInformation->getCpf(),
+            'name' => $sensitiveInformation->getName(),
+            'address' => $sensitiveInformation->getAddress(),
+        ];
     }
 }

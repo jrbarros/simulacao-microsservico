@@ -93,7 +93,7 @@ class SensitiveController extends AbstractController
             $sensitiveInformation = $this->sensitiveInformationService->findSensitiveInformationById($id);
 
             if (!$sensitiveInformation instanceof SensitiveInformation) {
-                throw new \RuntimeException();
+                throw new \RuntimeException(SensitiveInformationExceptionMessage::SENSITIVE_INFORMATION_NOT_EXIST);
             }
 
             $content = $request->getContent();
@@ -105,6 +105,41 @@ class SensitiveController extends AbstractController
             $this->sensitiveInformationService->processUpdate($data, $sensitiveInformation);
 
             return $this->json(['message' => SensitiveInformationMessage::UPDATE_RESPONSE]);
+        } catch (\Exception $exception) {
+            return $this->json(
+                [
+                    'message' => SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE,
+                    'error' => $exception->getMessage(),
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+    }
+
+    /**
+     * @Route("/{id}", name="find_by_id", methods={"GET"})
+     *
+     * @param $id
+     *
+     * @return JsonResponse
+     */
+    public function find($id): JsonResponse
+    {
+        try {
+            $sensitiveInformation = $this->sensitiveInformationService->findSensitiveInformationById($id);
+
+            if (!$sensitiveInformation instanceof SensitiveInformation) {
+                throw new \RuntimeException(SensitiveInformationExceptionMessage::SENSITIVE_INFORMATION_NOT_EXIST);
+            }
+
+            $dataReturn = $this->buildSensitiveInformationDataReturn($sensitiveInformation);
+
+            return $this->json(
+                [
+                    'message' => SensitiveInformationMessage::GET_RESPONSE,
+                    'data' => $dataReturn,
+                ]
+            );
         } catch (\Exception $exception) {
             return $this->json(
                 [
