@@ -1,12 +1,10 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
 namespace App\Controller;
 
-
-use App\Entity\SensitiveInformation;
 use App\Service\SensitiveInformationService;
-use App\Validator\CpfValidator;
 use App\Validator\SensitiveInformationExceptionMessage;
 use App\Validator\SensitiveInformationMessage;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,15 +14,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
 /**
- * Class SensitiveController
+ * Class SensitiveController.
+ *
  * @Route("v1/sensitive-information", name="sensitive_information_")
- * @package App\Controller
  */
 class SensitiveController extends AbstractController
 {
-
     /**
      * @var ManagerRegistry
      */
@@ -37,7 +33,8 @@ class SensitiveController extends AbstractController
 
     /**
      * SensitiveController constructor.
-     * @param ManagerRegistry $managerRegistry
+     *
+     * @param ManagerRegistry             $managerRegistry
      * @param SensitiveInformationService $sensitiveInformationService
      */
     public function __construct(
@@ -50,16 +47,17 @@ class SensitiveController extends AbstractController
 
     /**
      * @Route("", name="create",methods={"POST"})
+     *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function create(Request $request): JsonResponse
     {
         try {
-
             $content = $request->getContent();
 
-            if(empty($content)) {
+            if (empty($content)) {
                 throw new \RuntimeException(SensitiveInformationExceptionMessage::EMPTY_BODY);
             }
 
@@ -70,7 +68,7 @@ class SensitiveController extends AbstractController
             return $this->json(
                 [
                     'message' => SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE,
-                    'error' => $exception->getMessage()
+                    'error' => $exception->getMessage(),
                 ],
                 Response::HTTP_BAD_REQUEST
             );

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\SensitiveInformationRepository;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,18 +19,21 @@ class SensitiveInformation
 
     /**
      * @ORM\Column(name="cpf", type="string")
+     *
      * @var string
      */
     private string $cpf;
 
     /**
      * @ORM\Column(name="name", type="encrypted")
+     *
      * @var string
      */
     private string $name;
 
     /**
      * @ORM\Column(name="address", type="encrypted")
+     *
      * @var string
      */
     private string $address;

@@ -6,19 +6,18 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * Class CpfValidator
- * @package App\Validator
+ * Class CpfValidator.
  */
 class CpfValidator extends ConstraintValidator
 {
     /**
-     * @param mixed $value
+     * @param mixed      $value
      * @param Constraint $constraint
      */
     public function validate($value, Constraint $constraint): void
     {
         if (self::validateCpf($value)) {
-           return;
+            return;
         }
         /* @var $constraint Cpf */
         $this->context->buildViolation($constraint->message)
@@ -28,21 +27,22 @@ class CpfValidator extends ConstraintValidator
 
     /**
      * @param string $cpf
+     *
      * @return bool
      */
     public static function validateCpf(string $cpf): bool
     {
         $cpf = preg_replace("/\D/", '', $cpf);
 
-        if (strlen($cpf) !== 11) {
+        if (11 !== strlen($cpf)) {
             return false;
         }
 
-        if (self::verifySequenceCPF($cpf) === false) {
+        if (false === self::verifySequenceCPF($cpf)) {
             return false;
         }
 
-        if (self::validateDigitsCPF($cpf) === false) {
+        if (false === self::validateDigitsCPF($cpf)) {
             return false;
         }
 
@@ -51,32 +51,34 @@ class CpfValidator extends ConstraintValidator
 
     /**
      * @param $cpf
+     *
      * @return bool
      */
     private static function verifySequenceCPF(string $cpf): bool
     {
         return !(
-            $cpf === '00000000000' ||
-            $cpf === '11111111111' ||
-            $cpf === '22222222222' ||
-            $cpf === '33333333333' ||
-            $cpf === '44444444444' ||
-            $cpf === '55555555555' ||
-            $cpf === '66666666666' ||
-            $cpf === '77777777777' ||
-            $cpf === '88888888888' ||
-            $cpf === '99999999999'
+            '00000000000' === $cpf ||
+            '11111111111' === $cpf ||
+            '22222222222' === $cpf ||
+            '33333333333' === $cpf ||
+            '44444444444' === $cpf ||
+            '55555555555' === $cpf ||
+            '66666666666' === $cpf ||
+            '77777777777' === $cpf ||
+            '88888888888' === $cpf ||
+            '99999999999' === $cpf
         );
     }
 
     /**
      * @param string $cpf
+     *
      * @return bool
      */
     private static function validateDigitsCPF(string $cpf): bool
     {
-        for ($i = 9; $i < 11; $i++) {
-            for ($d = 0, $c = 0; $c < $i; $c++) {
+        for ($i = 9; $i < 11; ++$i) {
+            for ($d = 0, $c = 0; $c < $i; ++$c) {
                 $d += $cpf[$c] * (($i + 1) - $c);
             }
 
