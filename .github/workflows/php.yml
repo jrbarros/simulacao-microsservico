@@ -38,4 +38,4 @@ jobs:
 
     - name: Service One -> Run test suite
       working-directory: ./service_one
-      run: composer run-script test
+      run: composer install --prefer-dist --no-progress --no-suggest && composer run-script test
