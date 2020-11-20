@@ -22,12 +22,17 @@ trait RequestTrait
         }
     }
 
-    public function buildSensitiveInformationDataReturn(SensitiveInformation  $sensitiveInformation): array
+    /**
+     * @param SensitiveInformation $sensitiveInformation
+     *
+     * @return array
+     */
+    public function buildSensitiveInformationDataReturn(SensitiveInformation $sensitiveInformation): array
     {
         return [
             'cpf' => $sensitiveInformation->getCpf(),
             'name' => $sensitiveInformation->getName(),
-            'address' => $sensitiveInformation->getAddress()
+            'address' => $sensitiveInformation->getAddress(),
         ];
     }
 }

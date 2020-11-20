@@ -137,7 +137,7 @@ class SensitiveController extends AbstractController
             return $this->json(
                 [
                     'message' => SensitiveInformationMessage::GET_RESPONSE,
-                    'data'    => $dataReturn
+                    'data' => $dataReturn,
                 ]
             );
         } catch (\Exception $exception) {
