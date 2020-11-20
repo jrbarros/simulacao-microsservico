@@ -290,4 +290,26 @@ class SensitiveControllerTest extends WebTestCase
         self::assertEquals(SensitiveInformationExceptionMessage::EMPTY_BODY, $responseBody['error']);
         self::assertEquals(SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE, $responseBody['message']);
     }
+
+    public function test_get_success_sensitive_information(): void
+    {
+        $sensitive = $this
+            ->doctrine
+            ->getManager()
+            ->getRepository(SensitiveInformation::class)
+            ->findOneBy(['cpf'=> SensitiveInformationFixtures::CPF]);
+
+        $this->client->request(
+            'GET',
+            '/v1/sensitive-information/'. $sensitive->getId(),
+            [],
+            [],
+            [   'HTTP_Content-Type' => 'application/json',
+                'HTTP_Authorization' => 'Bearer ' . ''
+            ],
+            ''
+        );
+
+        self::assertResponseIsSuccessful();
+    }
 }

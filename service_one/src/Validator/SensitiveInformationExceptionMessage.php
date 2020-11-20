@@ -13,4 +13,5 @@ class SensitiveInformationExceptionMessage
     public const CPF_NOT_FOUND_OR_BLANK = "Campo 'cpf' não enviado ou estar em branco";
     public const NAME_NOT_FOUND_OR_BLANK = "Campo 'name' não enviado ou estar em branco";
     public const SENSITIVE_INFORMATION_EXIST = 'CPF já gravado na base, utilize o recurso de update';
+    public const SENSITIVE_INFORMATION_NOT_EXIST = 'Objeto não encontrado, favor revise o ID enviado';
 }
