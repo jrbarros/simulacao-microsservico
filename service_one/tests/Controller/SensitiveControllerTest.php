@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 
 
 use App\DataFixtures\SensitiveInformationFixtures;
+use App\Encrypt\Encrypt;
 use App\Entity\SensitiveInformation;
 use App\Helpers\Generator;
 use App\Validator\SensitiveInformationExceptionMessage;
@@ -25,12 +26,15 @@ class SensitiveControllerTest extends WebTestCase
 
     protected KernelBrowser $client;
     private ?Registry $doctrine;
+    private ?Encrypt $encrypt;
 
     public function setUp(): void
     {
         $this->client = static::createClient();
         $container =  self::$container;
         $this->doctrine = $container->get('doctrine');
+
+        $this->encrypt = $container->get(Encrypt::class);
         $this->loadFixtures([SensitiveInformationFixtures::class]);
     }
 
