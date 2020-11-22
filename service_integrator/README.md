@@ -21,10 +21,29 @@ Esta usando [`ramsey/devtools`](https://github.com/ramsey/devtools) com o [Pest]
 composer test:unit
 ```
 
-## Configuração de injeção de dependência.
+## Configuração de injeção de dependência
 
 ### `bootstrap.php`
 Foi usando o componente de injeção de dependência do Symfony o [The DependencyInjection Component](https://symfony.com/doc/current/components/dependency_injection.html)
+
+
+## Configuração de variáveis de ambiente
+
+### `etc/app.ini`
+```ini
+[app]
+name = "Hello, World!"
+
+[service.one]
+url = 'http://127.0.0.1:8000'
+
+[service.two]
+url = 'http://127.0.0.1:8001'
+
+[service.three]
+url = 'http://127.0.0.1:8003'
+
+```
 
 ## Rotas
 Arquivo de configuração.
