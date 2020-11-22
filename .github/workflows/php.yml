@@ -33,13 +33,15 @@ jobs:
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
 
-      #
-      # SERVICE ONE
-      #
+   
     - name: Service One -> Run test suite
       working-directory: ./service_one
-      run: composer install --prefer-dist --no-progress --no-suggest && composer run-script test:unit
-
+      run: composer install --prefer-dist --no-progress --no-suggest && composer run-script test
+      
+      #
+      # SERVICE INTEGRATOR
+      #
+        
     - name: Service Integrator -> Validate composer.json and composer.lock
       working-directory: ./service_integrator
       run: composer validate
@@ -61,4 +63,4 @@ jobs:
 
     - name: Service Integrator -> Run test suite
       working-directory: ./service_integrator
-      run: composer install --prefer-dist --no-progress --no-suggest && composer run-script test
+      run: composer install --prefer-dist --no-progress --no-suggest && composer run-script test:unit
