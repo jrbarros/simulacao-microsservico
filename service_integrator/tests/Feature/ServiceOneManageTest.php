@@ -64,7 +64,7 @@ test(
 
         expect($user)->toBeNull();
     },
-);
+)->skip(!(extension_loaded('swoole')), 'need Swoole extension');
 
 test(
     'teste serviceOne processRequest Response body error',
@@ -95,4 +95,4 @@ test(
         expect($user)->toBeNull();
         $this->expectOutputString("envia log de erro do service 1\n");
     },
-);
+)->skip(!(extension_loaded('swoole')), 'need Swoole extension');
