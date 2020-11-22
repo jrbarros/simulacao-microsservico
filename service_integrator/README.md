@@ -1,6 +1,14 @@
 # Integrador Swoole
 🧱 Projeto criado com  [Siler](https://github.com/leocavalcante/siler), que facilita a utilização do Swoole.
 
+# Instalação
+
+Por estar usando uma estrutura de pastas diferença, a pasta do .git esta no nível acima, vai apresentar
+error na configuração do captainhook/captainhook, mas a instalação dos componentes é finalizada corretamente.
+```bash
+composer install
+```
+
 
 ## Comandos
 
