@@ -60,8 +60,8 @@ Arquivo de configuração.
 ### `index.php`
 
 #
-#### Busca uma informação segura por ID do [Service One](service_one/README.md)
-**OBS** : Se estiver usando o docker essa rota não vai conseguir achar o [Service One](service_one/README.md) pois não esta
+#### Busca uma informação segura por ID do [Service One](service_one)
+**OBS** : Se estiver usando o docker essa rota não vai conseguir achar o [Service One](service_one) pois não esta
 configurado o docker network.
 
 **URL** : `/v1/find-information-by-id/{informationId}`
@@ -79,7 +79,7 @@ configurado o docker network.
 ```
 
 #### Serviço esta usando Mock dos dados.
-#### Busca uma informação segura por CPF do [Service One](service_one/README.md) e  [Service Two](service_one/README.md)
+#### Busca uma informação segura por CPF do [Service One](service_one) e  [Service Two](service_one)
 
 **URL** : `/v1/find-information-by-cpf-service-one-two/{cpf}`
 
