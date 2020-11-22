@@ -1,24 +1,6 @@
-Service Three
+TODO: Service Three Symfony
 =================
 
-Descrição
-
-Instalação
-----------
-
-```bash
-
-```
-
-Configuração
-------------
-```bash
-
-```
-
-Testes
-------
-
-```bash
-
-```
+Serviço responsável por dados de detalhes de informações do cliente, a proposta aqui 
+é usar o [Symfony](https://symfony.com/) com o [FOSElasticaBundle](https://github.com/FriendsOfSymfony/FOSElasticaBundle) para manipular e buscar
+as informações.
