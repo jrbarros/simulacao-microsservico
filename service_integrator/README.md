@@ -19,6 +19,7 @@ Levanta o [Servidor embutido do PHP](https://www.php.net/manual/en/features.comm
 Levanta o [Servidor do Swoole](https://www.swoole.co.uk/) na porta 9501.
 
 #### `docker-compose up`
+Recomentado se não tiver o Swoole instalado na maquina ou o xdebug padrão configurado.
 Levanta o  [Docker](https://www.docker.com/) usando [Dwoole](https://github.com/leocavalcante/dwoole) na porta 9501.
 
 ## Testes
@@ -36,6 +37,7 @@ Foi usando o componente de injeção de dependência do Symfony o [The Dependenc
 
 
 ## Configuração de variáveis de ambiente
+Todo: configurar o docker composer para subir todos os serviços e obter os endereços internos.
 
 ### `etc/app.ini`
 ```ini
@@ -59,6 +61,8 @@ Arquivo de configuração.
 
 #
 #### Busca uma informação segura por ID do [Service One](service_one/README.md)
+**OBS** : Se estiver usando o docker essa rota não vai conseguir achar o [Service One](service_one/README.md) pois não esta
+configurado o docker network.
 
 **URL** : `/v1/find-information-by-id/{informationId}`
 

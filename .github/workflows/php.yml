@@ -33,9 +33,32 @@ jobs:
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
+      #
+      # SERVICE ONE
+      #
     - name: Service One -> Run test suite
       working-directory: ./service_one
+      run: composer install --prefer-dist --no-progress --no-suggest && composer run-script test:unit
+
+    - name: Service Integrator -> Validate composer.json and composer.lock
+      working-directory: ./service_integrator
+      run: composer validate
+
+    - name: Service Integrator -> Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        working-directory: ./service_integrator
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Service Integrator -> Install dependencies
+      working-directory: ./service_integrator
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Service Integrator -> Run test suite
+      working-directory: ./service_integrator
       run: composer install --prefer-dist --no-progress --no-suggest && composer run-script test
