@@ -150,4 +150,39 @@ class SensitiveController extends AbstractController
             );
         }
     }
+
+    /**
+     * @Route("/find-by-cpf/{cpf}", name="find_by_cpf", methods={"GET"})
+     *
+     * @param string $cpf
+     *
+     * @return JsonResponse
+     */
+    public function findByCpf(string $cpf): JsonResponse
+    {
+        try {
+            $sensitiveInformation = $this->sensitiveInformationService->findSensitiveInformationByCpf($cpf);
+
+            if (!$sensitiveInformation instanceof SensitiveInformation) {
+                throw new \RuntimeException(SensitiveInformationExceptionMessage::SENSITIVE_INFORMATION_NOT_EXIST);
+            }
+
+            $dataReturn = $this->buildSensitiveInformationDataReturn($sensitiveInformation);
+
+            return $this->json(
+                [
+                    'message' => SensitiveInformationMessage::GET_RESPONSE,
+                    'data' => $dataReturn,
+                ]
+            );
+        } catch (\Exception $exception) {
+            return $this->json(
+                [
+                    'message' => SensitiveInformationExceptionMessage::DEFAULT_ERROR_MESSAGE,
+                    'error' => $exception->getMessage(),
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+    }
 }

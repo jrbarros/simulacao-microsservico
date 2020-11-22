@@ -1,0 +1,11 @@
+**
+
+!/etc
+!/src
+!/srv
+!/var/cache/.gitignore
+!/var/log/.gitignore
+!bootstrap.php
+!composer.*
+!index.php
+/etc/*.local.*

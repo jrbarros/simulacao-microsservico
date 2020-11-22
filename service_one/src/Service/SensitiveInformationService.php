@@ -146,6 +146,10 @@ class SensitiveInformationService
      */
     public function findSensitiveInformationByCpf(string $cpf): ?SensitiveInformation
     {
+        if ($this->adapter->hasItem($cpf)) {
+            return $this->adapter->getItem($cpf)->get();
+        }
+
         return $this->sensitiveInformationRepository->findOneBy(['cpf' => $cpf]);
     }
 
@@ -173,6 +177,16 @@ class SensitiveInformationService
     private function processCache(SensitiveInformation $sensitiveInformation): void
     {
         $item = $this->adapter->getItem($sensitiveInformation->getId());
+        $item
+            ->set($sensitiveInformation)
+            ->expiresAfter(new \DateInterval('P30D'));
+
+        $this->adapter->save($item);
+
+        /**
+         * Criando um segundo cache para busca por CPF
+         */
+        $item = $this->adapter->getItem($sensitiveInformation->getCpf());
         $item
             ->set($sensitiveInformation)
             ->expiresAfter(new \DateInterval('P30D'));

@@ -1,0 +1,67 @@
+{
+    "name": "siler/app",
+    "type": "project",
+    "description": "Set up a modern Siler app by running one command.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "leocavalcante",
+            "email": "lc@leocavalcante.com"
+        }
+    ],
+    "require": {
+        "hassankhan/config": "^2.1",
+        "leocavalcante/siler": "^1.7.5",
+        "monolog/monolog": "^2.1",
+        "symfony/dependency-injection": "^5.1",
+        "symfony/config": "^5.1",
+        "guzzlehttp/guzzle": "6.5.*"
+    },
+    "require-dev": {
+        "pestphp/pest": "^0.3",
+        "phpunit/phpunit": "^9.3",
+        "ramsey/devtools": "^1.4",
+        "roave/security-advisories": "dev-master",
+        "swoole/ide-helper": "^4.5"
+    },
+    "extra": {
+        "ramsey/devtools": {
+            "commands": {
+                "test:unit": {
+                    "override": true,
+                    "script": "pest"
+                },
+                "lint": {
+                    "override": true,
+                    "script": "phpcs --cache=./var/cache/phpcs.cache"
+                },
+                "lint:fix": {
+                    "override": true,
+                    "script": "phpcbf --cache=./var/cache/phpcs.cache"
+                }
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Test\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "start": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -S localhost:8080 srv/sapi.php"
+        ],
+        "swoole": [
+            "Composer\\Config::disableProcessTimeout",
+            "php srv/swoole.php"
+        ]
+    }
+}

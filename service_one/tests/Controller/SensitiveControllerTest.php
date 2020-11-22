@@ -351,6 +351,41 @@ class SensitiveControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
+    public function test_get_by_CPF_success_sensitive_information(): void
+    {
+        /** @var SensitiveInformation $sensitive */
+        $sensitive = $this
+            ->doctrine
+            ->getManager()
+            ->getRepository(SensitiveInformation::class)
+            ->findOneBy(['cpf'=> SensitiveInformationFixtures::CPF]);
+
+        $this->client->request(
+            'GET',
+            '/v1/sensitive-information/find-by-cpf/'. $sensitive->getCpf(),
+            [],
+            [],
+            [   'HTTP_Content-Type' => 'application/json',
+                'HTTP_Authorization' => 'Bearer ' . ''
+            ]
+        );
+
+        $responseBody = json_decode($this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertEquals(SensitiveInformationMessage::GET_RESPONSE, $responseBody['message']);
+
+        self::assertArrayHasKey('data', $responseBody);
+        self::assertArrayHasKey('cpf', $responseBody['data']);
+        self::assertArrayHasKey('name', $responseBody['data']);
+        self::assertArrayHasKey('address', $responseBody['data']);
+
+        self::assertEquals($sensitive->getCpf(), $responseBody['data']['cpf']);
+        self::assertEquals($sensitive->getName(), $responseBody['data']['name']);
+        self::assertEquals($sensitive->getAddress(), $responseBody['data']['address']);
+
+        self::assertResponseIsSuccessful();
+    }
+
     public function test_get_not_found_sensitive_information(): void
     {
         $this->client->request(

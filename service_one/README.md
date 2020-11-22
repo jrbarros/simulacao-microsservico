@@ -121,3 +121,20 @@ Busca uma informação segura
   "address": "Address test" 
 }
 ```
+
+#
+Busca uma informação segura por CPF
+
+**URL** : `/v1/sensitive-information/find-by-cpf/{cpf}`
+
+**Method** : `GET`
+
+**Response**
+
+```json
+{
+  "cpf": "45909050001",
+  "name": "Name test",
+  "address": "Address test" 
+}
+```
